@@ -14,13 +14,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    unoptimized: true,  // Ensure images are not optimized for static export
   },
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
+  // Add configuration to support static export
+  output: 'export',  // This tells Next.js to export as a static site
+  trailingSlash: true,  // Optional: Makes URLs consistent (e.g., `/about/` instead of `/about`)
 }
 
 mergeConfig(nextConfig, userConfig)
