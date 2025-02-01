@@ -77,21 +77,21 @@ export async function getProperties() {
 }
 
 export async function addProperty(formData: FormData) {
-  const property = {
+  const newProperty: Property = {
     id: Date.now().toString(),
     title: formData.get("title") as string,
     price: formData.get("price") as string,
     location: formData.get("location") as string,
     image: formData.get("image") as string,
-    bedrooms: Number.parseInt(formData.get("bedrooms") as string),
-    bathrooms: Number.parseInt(formData.get("bathrooms") as string),
-    area: Number.parseInt(formData.get("area") as string),
+    bedrooms: Number(formData.get("bedrooms")),
+    bathrooms: Number(formData.get("bathrooms")),
+    area: Number(formData.get("area")),
     type: formData.get("type") as string,
-    status: "active",
+    status: "active" as const,
     createdAt: new Date().toISOString().split("T")[0],
   }
 
-  properties.push(property)
+  properties.push(newProperty)
   revalidatePath("/admin/properties")
   revalidatePath("/properties")
   return { success: true }
@@ -106,9 +106,9 @@ export async function updateProperty(id: string, formData: FormData) {
         price: formData.get("price") as string,
         location: formData.get("location") as string,
         image: formData.get("image") as string,
-        bedrooms: Number.parseInt(formData.get("bedrooms") as string),
-        bathrooms: Number.parseInt(formData.get("bathrooms") as string),
-        area: Number.parseInt(formData.get("area") as string),
+        bedrooms: Number(formData.get("bedrooms")),
+        bathrooms: Number(formData.get("bathrooms")),
+        area: Number(formData.get("area")),
         type: formData.get("type") as string,
       }
     }
