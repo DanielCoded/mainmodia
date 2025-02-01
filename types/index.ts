@@ -8,7 +8,7 @@ export interface Property {
   bathrooms: number
   area: number
   type: string
-  status?: "active" | "inactive"
+  status: "active" | "inactive"
   createdAt: string
 }
 

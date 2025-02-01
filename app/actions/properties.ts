@@ -72,7 +72,7 @@ let properties: Property[] = [
   },
 ]
 
-export async function getProperties() {
+export async function getProperties(): Promise<Property[]> {
   return properties
 }
 
@@ -87,7 +87,7 @@ export async function addProperty(formData: FormData) {
     bathrooms: Number(formData.get("bathrooms")),
     area: Number(formData.get("area")),
     type: formData.get("type") as string,
-    status: "active" as const,
+    status: "active",
     createdAt: new Date().toISOString().split("T")[0],
   }
 

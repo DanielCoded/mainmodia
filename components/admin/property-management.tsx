@@ -50,23 +50,17 @@ export default function PropertyManagement() {
     const aValue = a[sortColumn]
     const bValue = b[sortColumn]
 
-    if (!aValue || !bValue) return 0
+    if (aValue === undefined || bValue === undefined) return 0
 
     if (typeof aValue === "string" && typeof bValue === "string") {
       return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
     }
 
-    return sortDirection === "asc"
-      ? aValue < bValue
-        ? -1
-        : aValue > bValue
-          ? 1
-          : 0
-      : bValue < aValue
-        ? -1
-        : bValue > aValue
-          ? 1
-          : 0
+    if (typeof aValue === "number" && typeof bValue === "number") {
+      return sortDirection === "asc" ? aValue - bValue : bValue - aValue
+    }
+
+    return 0
   })
 
   const paginatedProperties = sortedProperties.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
