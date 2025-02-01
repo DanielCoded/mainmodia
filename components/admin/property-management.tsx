@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -20,12 +19,14 @@ import PropertyForm from "./property-form"
 import { deleteProperty, togglePropertyStatus, getProperties } from "@/app/actions/properties"
 import { useToast } from "@/components/ui/use-toast"
 
+type SortableColumns = keyof Pick<Property, "title" | "location" | "type" | "price" | "status">
+
 export default function PropertyManagement() {
   const [searchTerm, setSearchTerm] = useState("")
   const [properties, setProperties] = useState<Property[]>([])
   const [editingProperty, setEditingProperty] = useState<Property | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortColumn, setSortColumn] = useState<keyof Property>("title")
+  const [sortColumn, setSortColumn] = useState<SortableColumns>("title")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const { toast } = useToast()
 
@@ -46,16 +47,33 @@ export default function PropertyManagement() {
   )
 
   const sortedProperties = [...filteredProperties].sort((a, b) => {
-    if (a[sortColumn] < b[sortColumn]) return sortDirection === "asc" ? -1 : 1
-    if (a[sortColumn] > b[sortColumn]) return sortDirection === "asc" ? 1 : -1
-    return 0
+    const aValue = a[sortColumn]
+    const bValue = b[sortColumn]
+
+    if (!aValue || !bValue) return 0
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+    }
+
+    return sortDirection === "asc"
+      ? aValue < bValue
+        ? -1
+        : aValue > bValue
+          ? 1
+          : 0
+      : bValue < aValue
+        ? -1
+        : bValue > aValue
+          ? 1
+          : 0
   })
 
   const paginatedProperties = sortedProperties.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   const totalPages = Math.ceil(sortedProperties.length / itemsPerPage)
 
-  const handleSort = (column: keyof Property) => {
+  const handleSort = (column: SortableColumns) => {
     if (column === sortColumn) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
